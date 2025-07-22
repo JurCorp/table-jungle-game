@@ -1,0 +1,16 @@
+// Button.js
+import React from 'react';
+
+// Компонент Button принимает children (текст внутри кнопки) и onClick (что сделать по нажатию)
+function Button({ children, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className="bg-yellow-400 text-black px-4 py-2 rounded-2xl shadow hover:bg-yellow-500 transition-all"
+    >
+      {children}
+    </button>
+  );
+}
+
+export default Button;
