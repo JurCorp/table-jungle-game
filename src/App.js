@@ -245,7 +245,7 @@ if (step === "wake") {
         <img src="/babka1.jpg" alt="бабка" className="w-full max-w-md max-h-[40vh] object-contain mb-4 rounded" />
         <p>Она машет Кириллу и явно что-то от него хочет. Как отреагируете?</p>
         <ChoiceButton onClick={() => { setReputation(r => r - 1); setStep("next") }}>Нахамить</ChoiceButton>
-        <ChoiceButton onClick={() => setStep("next")}>Поздароваться</ChoiceButton>
+        <ChoiceButton onClick={() => setStep("next")}>Поздороваться</ChoiceButton>
       </div>
     );
   }
