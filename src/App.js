@@ -271,7 +271,7 @@ if (step === "wake") {
       <div className="p-6 text-center">
         <h2 className="text-xl font-bold mb-4">Вы наслаждаетесь видом на город и прибываете вовремя</h2>
         <img src="/city2.jpg" alt="город" className="w-full max-w-md max-h-[40vh] object-contain mb-4 rounded" />
-        <ChoiceButton onClick={() => setStep("building")}>Подъезжает здание Jurassic Corp</ChoiceButton>
+        <ChoiceButton onClick={() => setStep("building")}>В прекрасном настроении, подъезжаете к зданию Jurassic Corp</ChoiceButton>
       </div>
     );
   }
@@ -281,7 +281,7 @@ if (step === "wake") {
       <div className="p-6 text-center">
         <h2 className="text-xl font-bold mb-4">Вы видите вдалеке Jurassic corp, и переживаете, что можете опоздать </h2>
         <img src="/city down.jpg" alt="город" className="w-full max-w-md max-h-[40vh] object-contain mb-4 rounded" />
-        <ChoiceButton onClick={() => setStep("building")}>Подъезжает здание Jurassic Corp</ChoiceButton>
+        <ChoiceButton onClick={() => setStep("building")}>Волнуясь, подъезжаете к зданию Jurassic Corp</ChoiceButton>
       </div>
     );
   }
