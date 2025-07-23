@@ -31,6 +31,8 @@ const App = () => {
   const [finalChoice, setFinalChoice] = useState(null);
   const [feedback, setFeedback] = useState("");
   const [mistakes, setMistakes] = useState([]); // Храним ошибки
+  const [ariImage, setAriImage] = useState(null);
+
   
   const questions = [
     {
@@ -93,9 +95,12 @@ const App = () => {
   };
 
   const getAriResponse = (isCorrect) => {
-    const phrases = ariPhrases[mood][isCorrect ? "correct" : "incorrect"];
-    return phrases[Math.floor(Math.random() * phrases.length)];
-  };
+  const phrases = ariPhrases[mood][isCorrect ? "correct" : "incorrect"];
+  const text = phrases[Math.floor(Math.random() * phrases.length)];
+  const image = `/ari_${mood}_${isCorrect ? "happy" : "sad"}.jpg`;
+  return { text, image };
+};
+
 const ErrorStats = ({ mistakes }) => (
   <div className="mt-6">
     <h3 className="font-bold text-lg mb-2">Ошибки:</h3>
@@ -115,32 +120,34 @@ const ErrorStats = ({ mistakes }) => (
   </div>
 );
 
-  const handleAnswer = (option) => {
-    if (selected) return;
-    setSelected(option);
-    const current = questions[questionIndex];
-    const isCorrect = option === current.correct;
-    if (isCorrect) {
-      setScore((prev) => prev + 1);
-    } else {
-      setMistakes((prev) => [...prev, {
-        question: current.question,
-        selected: option,
-        correct: current.correct
-      }]);
-      if (Math.random() < 0.4) setMood("bad");
-    }
-    setAriResponse(getAriResponse(isCorrect));
-    setTimeout(() => {
+  const handleAnswer = (opt) => {
+  if (selected) return;
+  setSelected(opt);
+  const isCorrect = opt === questions[questionIndex].correct;
+  const response = getAriResponse(isCorrect);
+  setAriResponse(response.text);
+  setAriImage(response.image);
+
+  if (!isCorrect) {
+    setMistakes([...mistakes, {
+      question: questions[questionIndex].question,
+      userAnswer: opt,
+      correctAnswer: questions[questionIndex].correct,
+    }]);
+  }
+
+  setTimeout(() => {
+    if (questionIndex + 1 < questions.length) {
+      setQuestionIndex(questionIndex + 1);
       setSelected(null);
-      setAriResponse("");
-      if (questionIndex + 1 >= questions.length) {
-        setStep("end");
-      } else {
-        setQuestionIndex((prev) => prev + 1);
-      }
-    }, 2500);
-  };
+      setAriResponse(null);
+      setAriImage(null);
+    } else {
+      setStep("quiz-end");
+    }
+  }, 2000);
+};
+
   const [testPassed, setTestPassed] = useState(false); // или true, для демонстрации
   const handleSendFeedback = async () => {
     const message = `🦖 Новый отзыв от ${username || "Неизвестный динозавр"}:%0A${feedback}`;
@@ -367,11 +374,14 @@ if (step === "wake") {
             </button>
           ))}
         </div>
-        {ariResponse && (
-          <div className="mt-4 p-3 border-l-4 border-black bg-yellow-100 italic">
-            <strong>Аристарх:</strong> {ariResponse}
-          </div>
-        )}
+        {ariResponse && ariImage && (
+  <div className="mt-4 flex items-start gap-4">
+    <img src={ariImage} alt="Аристарх" className="w-24 h-24 object-contain" />
+    <div className="p-3 border-l-4 border-black bg-yellow-100 italic flex-1">
+      <strong>Аристарх:</strong> {ariResponse}
+    </div>
+  </div>
+)}
       
       </div>
     );
