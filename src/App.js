@@ -121,32 +121,34 @@ const ErrorStats = ({ mistakes }) => (
 );
 
   const handleAnswer = (opt) => {
-  if (selected) return;
+  if (selected) return; // чтобы нельзя было кликнуть дважды
   setSelected(opt);
-  const isCorrect = opt === questions[questionIndex].correct;
-  const response = getAriResponse(isCorrect);
-  setAriResponse(response.text);
-  setAriImage(response.image);
 
-  if (!isCorrect) {
-    setMistakes([...mistakes, {
-      question: questions[questionIndex].question,
-      userAnswer: opt,
-      correctAnswer: questions[questionIndex].correct,
-    }]);
+  const isCorrect = opt === questions[questionIndex].correct;
+  if (isCorrect) {
+    setScore(prev => prev + 1);
+    setMood("good");
+    setAriResponse("Хм. Верно. Продолжим.");
+    setAriImage("/ari_good_happy.jpg");
+  } else {
+    setMood("bad");
+    setAriResponse("Неверно... Надеюсь, это не всё, на что ты способен.");
+    setAriImage("/ari_good_sad.jpg");
   }
 
+  // перейти к следующему вопросу через задержку
   setTimeout(() => {
     if (questionIndex + 1 < questions.length) {
-      setQuestionIndex(questionIndex + 1);
+      setQuestionIndex(prev => prev + 1);
       setSelected(null);
-      setAriResponse(null);
+      setAriResponse("");
       setAriImage(null);
     } else {
       setStep("quiz-end");
     }
   }, 2000);
 };
+
 
   const [testPassed, setTestPassed] = useState(false); // или true, для демонстрации
   const handleSendFeedback = async () => {
@@ -229,22 +231,12 @@ if (step === "wake") {
         <h2 className="text-xl font-bold mb-4">Завтрак в спешке</h2>
         <img src="/bread.jpg" alt="бутерброд" className="w-full max-w-md max-h-[40vh] object-contain mb-4 rounded" />
         <p>Настроение испортилось. Кирилл раздражён.</p>
-        <ChoiceButton onClick={() => { setMood("bad"); setStep("grnadma") }}>Выйти на улицу</ChoiceButton>
+        <ChoiceButton onClick={() => { setMood("bad"); setStep("grandma") }}>Выйти на улицу</ChoiceButton>
       </div>
     );
   }
 
-  if (step === "clothes") {
-    const sloppy = mood === "bad";
-    return (
-      <div className="p-6 text-center">
-        <h2 className="text-xl font-bold mb-4">Выбор одежды</h2>
-        <img src={`https://placehold.co/600x300?text=${sloppy ? "Растрепанный+вид" : "Стильно+одет"}`} alt="одежда" className="mb-4 mx-auto" />
-        <p>{sloppy ? "Неровно застёгнутая рубашка, галстук в кармане…" : "Кирилл собран и опрятен."}</p>
-        <ChoiceButton onClick={() => setStep("grandma")}>Выходить из дома</ChoiceButton>
-      </div>
-    );
-  }
+  
 
   if (step === "grandma") {
     return (
@@ -253,7 +245,7 @@ if (step === "wake") {
         <img src="/babka1.jpg" alt="бабка" className="w-full max-w-md max-h-[40vh] object-contain mb-4 rounded" />
         <p>Она машет Кириллу и явно что-то от него хочет. Как отреагируете?</p>
         <ChoiceButton onClick={() => { setReputation(r => r - 1); setStep("next") }}>Нахамить</ChoiceButton>
-        <ChoiceButton onClick={() => setStep("next")}>Помахать в ответ</ChoiceButton>
+        <ChoiceButton onClick={() => setStep("next")}>Поздароваться</ChoiceButton>
       </div>
     );
   }
@@ -388,27 +380,15 @@ if (step === "wake") {
   }
 
  
-  if (step === "post-quiz") {
+if (step === "quiz-end") {
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-yellow-50 text-black px-4 text-center">
-      <h2 className="text-2xl font-bold mb-4">Вдруг раздался топот...</h2>
-      <p className="mb-6 text-lg">
-        Из-за угла вышел сам ТИРЕКС — Валерий Георгиевич. Он смотрит прямо на тебя.
+    <div className="p-6 text-center space-y-4">
+      <h1 className="text-2xl text-black font-bold">Результаты собеседования</h1>
+      <p className="text-lg text-black">
+        Ты набрал <strong>{score}</strong> из {questions.length} баллов!
       </p>
-      <div className="flex flex-col gap-4 w-full max-w-xs">
-        <ChoiceButton
-          onClick={() => setStep("meet-trex")}
-          className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Остаться и поздороваться
-        </ChoiceButton>
-        <ChoiceButton
-          onClick={() => setStep("run-away")}
-          className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded"
-        >
-          Убежать в кусты
-        </ChoiceButton>
-      </div>
+      <p className="italic text-black">Мы вам перезвоним… возможно.</p>
+   <img src="/hall.png" alt="коридор" className="w-full max-w-md max-h-[40vh] object-contain mb-4 rounded" />
     </div>
   );
 }
