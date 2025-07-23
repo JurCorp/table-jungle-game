@@ -379,8 +379,20 @@ if (step === "wake") {
     );
   }
 
- 
-if (step === "quiz-end") {
+ if (step === "quiz-end") {
+    const appearanceOk = mood === "good" && reputation >= 5;
+    return (
+      <div className="p-6 text-center">
+        <h1 className="text-2xl text-black font-bold">Результаты собеседования</h1>
+      <p className="text-lg text-black">
+        Ты набрал <strong>{score}</strong> из {questions.length} баллов! Сейчас к вам выйдет офис-менеджер, ожидайте
+      </p>
+        <ChoiceButton
+          onClick={() => setStep("babka2")}>Ждать...</ChoiceButton>
+      </div>
+    );
+  }
+if (step === "babka2") {
   return (
     <div className="p-6 text-center space-y-4">
       <h1 className="text-2xl text-black font-bold">Результаты собеседования</h1>
@@ -388,7 +400,7 @@ if (step === "quiz-end") {
         Ты набрал <strong>{score}</strong> из {questions.length} баллов!
       </p>
       <p className="italic text-black">Мы вам перезвоним… возможно.</p>
-   <img src="/hall.png" alt="коридор" className="w-full max-w-md max-h-[40vh] object-contain mb-4 rounded" />
+   <img src="/babka2.jpg" alt="коридор" className="w-full max-w-md max-h-[40vh] object-contain mb-4 rounded" />
     </div>
   );
 }
